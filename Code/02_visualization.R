@@ -21,3 +21,6 @@ plot(b2, col=cl)
 
 cl = colorRampPalette(c("orchid", "palegreen", "royalblue")) (100)
 plot(b2, col=cl)
+
+cl = colorRampPalette(c("orchid", "darkmagenta", "palegreen", "forestgreen", "royalblue")) (150)
+plot(b2, col=cl)
