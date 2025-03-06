@@ -10,6 +10,8 @@ im.list()
 
 #from now we use "=" instead of <-
 
+#import band from the list.  "band" (b1, b2, b3...) spectrum of colours
+
 b2 = im.import("sentinel.dolomites.b2.tif")
 
 # for deciding colors 
