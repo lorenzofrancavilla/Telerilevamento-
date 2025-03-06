@@ -18,7 +18,7 @@ cl = colorRampPalette(c("black", "dark grey", "light grey")) (100)
 plot(b2, col=cl)
 
 #exercise: make your own color ramp - search for R colors - https://sites.stat.columbia.edu/tzheng/files/Rcolor.pdf 
-#remeber  with "plot" you create/visualize the graph
+#remeber  with "plot" you create/visualize the satelite image/graph
 # RGB (red,green,blue) it is not good for colorblind
 
 cl = colorRampPalette(c("orchid", "palegreen", "royalblue")) (100)
