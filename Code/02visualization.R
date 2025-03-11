@@ -109,5 +109,37 @@ pairs(sentdol)
 plot(sentdol, col=viridis(100))
 plot(sentdol, col=mako(100))
 
+#layers 
+# 1 = blue (b2)
+# 2 = green (b3)
+# 3 = red (b4)
+# 4 = NIR (near infrared) (b8)
 
+# rgb - red green blue , sovrapposte creano tutti i colori possibili. with rgb we create the satellite image 
 
+# natural colours , colori che vede l'occhio umano 
+#R= colore corrispondente alla banda , G= banda verde, B= banda verde
+
+im.plotRGB(sentdol, r=3, g=2, b=1)
+
+#con questa linea di rgb vedo poco, l'occhio umano non riconosce lo spettro 
+
+# usiamo l'infrarosso vicino, immagine a falsi colori - false colours , i sacrifice the blue color , scalo di uno i colori RGB
+
+# in the red band we have put the NIR, NIR- le piante riflettono moltissimo - le piante verranno fuori di colore rosso 
+
+# NIR band 832 nanometers (human vision 600 nm)
+
+im.plotRGB(sentdol, r=4, g=3, b=2)
+
+# exercise plot image using the NIR on top of green component of the RGB scheme
+
+# put the 4 on the green scheme - riflettanza in infrarosso 
+
+im.plotRGB(sentdol, r=3, g=4, b=2)
+
+im.multiframe(1, 2)
+im.plotRGB(sentdol, r=4, g=2, b=2)
+im.plotRGB(sentdol, r=3, g=4, b=2)
+
+im.plotRGB(sentdol, r=3, g=2, b=4)
