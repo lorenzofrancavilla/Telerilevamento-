@@ -42,4 +42,4 @@ plot(mato2006[[1]], col=inferno(100))
 
 # tree: NIR=255 (massima riflettanza), red=0, DVI=NIR-red=255
 # stressed tree: NIR=100, red=20, DVI = NIR-red = 100-20 = 80
-le cellule collassano  
+#le cellule collassano  
