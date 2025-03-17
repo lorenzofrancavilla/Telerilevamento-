@@ -1,7 +1,7 @@
 
 # code to calculate spectral images from satellite images
 
-library(imageRy) # beloved package developed at unibo
+library(imageRy)
 library(terra)
 library(viridis)
 
