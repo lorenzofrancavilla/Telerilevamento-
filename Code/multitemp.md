@@ -16,3 +16,6 @@ this will create the following image:
 
 <img src="../pics/output.jpeg" width=50% />
 
+> Note 1: information about the copernicus program can be found at https://www.copernicus.eu/en
+> Here are the [Sentinel data used](https://www.copernicus.eu/en)
+
