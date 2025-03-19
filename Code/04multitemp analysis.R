@@ -38,3 +38,7 @@ grdif = gr[[4]] - gr[[1]] # 2015 - 2000
 plot(grdif)
 
 # le temperature piu basse aumentano
+
+# esportare le immagini fuori da R e reimportarle in R
+
+
