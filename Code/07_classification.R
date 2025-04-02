@@ -1,7 +1,11 @@
 # R code for classifing images 
 
+# install.packages("patchwork")
+
 library(terra)
 library(imageRy)
+library(ggplot2)
+library(patchwork)
 
 mato1992 = im.import("matogrosso_l5_1992219_lrg.jpg")
 mato1992 = flip(mato1992)
@@ -41,3 +45,32 @@ perc2006 = freq(mato2006c) * 100 / ncell(mato2006c)
 
 # human = 55%
 # forest = 45%
+
+class = c("Forest","Human")
+y1992 = c(83,16)
+y2006 = c(45,55)
+tabout = data.frame (class, y1992, y2006)
+tabout
+
+#creare grafico con ggplot, grafici per barre (istogrammi) ma con ggplot ci sono molti grafici
+ggplot(tabout, aes(x=class, y=y1992, color=class)) +
+geom_bar(stat="identity", fill="white")
+
+ggplot(tabout, aes(x=class, y=y2006, color=class)) +
+geom_bar(stat="identity", fill="white")
+
+# metto i grafici uno di fianco all'altro
+
+p1 = ggplot(tabout, aes(x=class, y=y1992, color=class)) +
+geom_bar(stat="identity", fill="white") +
+ylim(c(0,100)) +
+coord_flip()
+
+p2 = ggplot(tabout, aes(x=class, y=y2006, color=class)) +
+geom_bar(stat="identity", fill="white") +
+ylim(c(0,100)) +
+coord_flip()
+
+p1 + p2
+
+p1 / p2
