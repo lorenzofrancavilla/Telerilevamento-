@@ -85,4 +85,28 @@ solarc = im.classify(solar, num_clusters=3)
 
 # plot original image beside classified image 
 
-im.multiframe(solarc, solar)
+im.multiframe(1, 2)
+plot(solar)
+plot(solarc)
+
+# 3 = low
+# 1 = medium
+# 2 = high
+
+subst # function for sostituire i quadratini della classificazione)
+
+solarcs = subst(solarc, c(3, 1, 2), c("c1_low","c2_medium","c3_high"))
+plot(solarcs)
+
+# exercise calculate the percentages of the Sun energy classes with one line of code 
+
+percsolarcs = freq(solarcs)$count * 100 / ncell(solarcs)
+
+# percentage = 38, 41, 21
+
+class = c("c1_low", "c2_high", "c3_high)
+perc = c(38, 41, 21)
+tabsol = data.frame(class, perc)
+
+ggplot(tabsol, aes(x=class, y=perc, color=class)) +
+geom_bar(stat="identity", fill="white")
