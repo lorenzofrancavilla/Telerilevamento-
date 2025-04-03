@@ -74,3 +74,15 @@ coord_flip()
 p1 + p2
 
 p1 / p2
+
+# solar orbiter--- satellite that observes the sun 
+
+solar = im.import("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg")
+
+# classify the image in 3 classes with im.classify
+
+solarc = im.classify(solar, num_clusters=3)
+
+# plot original image beside classified image 
+
+im.multiframe(solarc, solar)
