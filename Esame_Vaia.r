@@ -51,3 +51,10 @@ im.multiframe(1,2)
 plot(ndvi18)
 plot(ndvi19)
 
+per vedere meglio bosco costruisco soglia ndvi 
+
+im.multiframe(1,2)
+plot(ndvi18, col=inferno(100))
+plot(ndvi19, col=inferno(100))
+
+
