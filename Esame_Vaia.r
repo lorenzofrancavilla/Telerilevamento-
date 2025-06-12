@@ -108,12 +108,15 @@ perc19 = freq(bosco19c)$count * 100 / ncell(bosco19c)
 boscoperso= perc18-perc19
 # = 4,03%
 
+# calcolo pixel persi da 2018 a 2018
+
 # adesso faccio ggplot
 
-class = c("Percentuale boschi agordino")
-y2018 = c(84)
+class = c("Percentuale boschi agordino") # stabilisco cosa voglio indicare
+y2018 = c(84) # indico anno e percentuale di bosco 
 y2019 = c(80)
-tabout = data.frame(class, y2018, y2019)
+perdite = y2018 - y2019 
+tabout = data.frame(class, y2018, y2019, perdite )
 
 p1 = ggplot(tabout, aes(x=class, y=y2018, color=class)) + 
   geom_bar(stat="identity", fill="white") + 
@@ -123,15 +126,47 @@ p2 = ggplot(tabout, aes(x=class, y=y2019, color=class)) +
   geom_bar(stat="identity", fill="white") + 
   ylim(c(0,100))
 
+p3 = ggplot(tabout, aes(x=class, y=perdite, color=class)) + 
+  geom_bar(stat="identity", fill="white") + 
+  ylim(c(0,100))
+
+
 
 p0 = im.ggplot(ndvi18)
 p00 = im.ggplot(ndvi19)
   
-p0 + p00 + p1 + p2
+p1 + p2 + p3
+
+# differenza NDVI
+diff_ndvi = ndvi19 - ndvi18
+
+# imposta soglia per perdita bosco (es. -0.3)
+soglia_perdita = -0.3
+
+# crea raster binario: TRUE dove perdita NDVI significativa
+perdita_ndvi = diff_ndvi < soglia_perdita
+
+# plot differenza NDVI
+plot(diff_ndvi, main = "Differenza NDVI 2019 - 2018", col = viridis(100))
+
+# evidenzia solo le aree di perdita significativa in rosso su mappa vuota
+plot(perdita_ndvi, col = c("transparent", "red"))
+
+im.multiframe(1,2)
+plot(diff_ndvi, main = "Differenza NDVI 2019 - 2018", col = viridis(100))
+plot(perdita_ndvi, col = c("transparent", "red"))
 
 
+# vaia 24
+vaia24=rast("Vaia24.tif")
+plot(vaia24)
 
+plotRGB(vaia24, r = 1, g = 2, b = 3, stretch = "lin", main = "sentinel (median)")
 
+ndvi24 = (vaia24[[4]] - vaia24[[1]]) / (vaia24[[4]] + vaia24[[1]])
+plot(ndvi24)
 
-
-
+im.multiframe(1,3)
+plot(ndvi18)
+plot(ndvi19)
+plot(ndvi24)
