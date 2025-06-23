@@ -1,16 +1,17 @@
 # scaricato immagini da GEE
 # ho usato Sentinel con bande (B2-blu, B3-green, B4-red, B8-NIR)
 #scaricato da google earth engine due immagini che fanno la mediana
-# la prima immagine corrisponde al periodo di tempo che va da luglio ad ottobre del 2018, la seconda da luglio ad ottobre del 2019
-
+# Le immagini scaricate dal satellite Sentinel 2 hanno una risoluzione di 10m per pixel.
+# la prima immagine corrisponde al periodo di tempo che va da luglio ad ottobre del 2018, la seconda da luglio ad ottobre del 2019 e l'ultima scaricata corrisponde allo stesso periodo nel 2025 
+# setto la working directory sulla cartella con le immagini 
 setwd("Desktop/Vaia")
 
 #carico pacchetti
-library(imageRy)
+library(imageRy) # per lavorare con immagini satellitari
 library(terra)
-library(viridis)
-library(ggplot2)
-library(patchwork)
+library(viridis) # per avere palette di colori adatte
+library(ggplot2) # per schematizzare e fare grafici
+library(patchwork) # per unire grafici e immagini 
 
 
 #importo immagini e do nome (le immagini se plottate sono divise in tre bande(RGB) devo unirle)
@@ -32,7 +33,8 @@ im.plotRGB(vaia18, r=2, g=3, b=4) # il suolo nudo è giallo
 im.plotRGB(vaia19, r=4, g=2, b=3)
 im.plotRGB(vaia19, r=2, g=3, b=4) # in grigio e giallo si vedono le parti senza bosco 
 
-#facciamo multiframe con falsi colori
+#facciamo multiframe con falsi colori, dal multiframe si nota nel confronto tra le due immagini con falsi colori un aumento di sezioni di bosco di colore grigio, le guali indicano un area di vegetazione morta/ danneggiata dopo il 2018
+
 
 
 im.multiframe(1,2)
@@ -43,15 +45,37 @@ im.multiframe(1,2)
 im.plotRGB(vaia18, r=4, g=2, b=3)
 im.plotRGB(vaia19, r=4, g=2, b=3)
 
-# ora calcolo l'ndvi del 2018 (B8-B1)/(B8+B1) (B8-NIR, B4-Red)
+# ora calcolo l'ndvi del 2018 (B8-B1)/(B8+B1) (B8-NIR, B4-Red).
+
+# L'Ndvi è L’NDVI (Normalized Difference Vegetation Index) è un indice spettrale usato 
+# in telerilevamento per misurare la salute e densità della vegetazione. 
+# Viene calcolato usando le bande NIR (infrarosso vicino) e Red (rosso) di immagini satellitari (come quelle del Sentinel-2).
+
+# inserisco formula in .md
+# NIR (Near Infrared): Banda sensibile alla riflettanza della vegetazione sana.
+# Red: Banda in cui la vegetazione assorbe luce per la fotosintesi.
+
+# valori dell'NDVI          
+# < 0        Acqua, neve                          
+# 0 - 0.1    Suolo nudo, roccia, aree urbanizzate 
+# 0.2 - 0.5  Vegetazione scarsa o stressata       
+# > 0.5     |Vegetazione densa e sana             
+
+
+# ndvi 2018
+# per calcolare l'ndvi faccio la differenza tra banda NIR[4] e banda red[1] fratto la somma 
 
 ndvi18 = (vaia18[[4]] - vaia18[[1]]) / (vaia18[[4]] + vaia18[[1]])
 plot(ndvi18)
+
+# si puo vedere nel plot che i valori superiori a 5 si identificano con colori accessi verso verde e giallo indivando la vegetazione sana 
 
 # calcoliamo ndvi 2019
 
 ndvi19 = (vaia19[[4]] - vaia19[[1]]) / (vaia19[[4]] + vaia19[[1]])
 plot(ndvi19)
+
+# invece nel 2019 appaiono macchie blu che cospargono i boschiu in seguito all'incendio(nella parte di bosco rivolta verso sud delle pale di san lucano) e alla tempesta vaia in tutta l'area interessata 
 
 # confrontiamo 
 
@@ -60,12 +84,12 @@ plot(ndvi18)
 plot(ndvi19)
 
 
-
+# plottiamo con la palette di viridis
 im.multiframe(1,2)
 plot(ndvi18, col=inferno(100))
 plot(ndvi19, col=inferno(100))
 
-# classificazione in 2 parti tra bosco e montagna/urbanizzazione 
+# classificazione in 2 parti tra bosco e roccia/urbanizzazione/suolo nudo con la funzione im.classify mettendo due categorie di classificazione
 
 bosco18c = im.classify(ndvi18, num_clusters = 2)
 
@@ -73,26 +97,32 @@ bosco19c = im.classify(ndvi19, num_clusters = 2)
 # codice per invertire le classi di bosco19c, per risolvere problema inversione colori grafico 
 bosco19c = classify(bosco19c, rcl = matrix(c(1, 2, 2, 1), ncol = 2, byrow = TRUE))
 
-#multiframe con colori specifici senno si invertono
+#multiframe con nomi  senno si invertono
 
 im.multiframe(1,2)
 plot(bosco18c)
 plot(bosco19c)
 
+# 1 = bosco
+# 2 = roccia, suolo nudo, umano
 
+# risulta che nel 2019 la quantità di vegetazione 
 
-# calcolo percentuale bosco nel 2018 
+# ora che abbiamo la classificazione in due classi sulle due immagini possiamo calcolare i pixel di entrambe le immagini e ricavare la percentuale di bosco e di area urbanizzata/suolo nudo. 
+# risulterà 
 
-# calcolo i pixel nell'immagine 2018 e la percentuale bosco 18 e 19 
+# calcolo percentuale bosco nel 2018, 2019 
+
+# calcolo i pixel nell'immagine 2018, 2019 e la percentuale bosco 18 e 19 
 # Questa funzione fornisce un data frame con colonne value (1 o 2) e count (numero di pixel)
-f18 <- freq(bosco18c)  # classi e conteggi per il 2018
-f19 <- freq(bosco19c)  # classi e conteggi per il 2019
+f18 = freq(bosco18c)  # classi e conteggi per il 2018
+f19 = freq(bosco19c)  # classi e conteggi per il 2019
 
 
 
 # Totale pixel validi, calcolo il totale dei pixel validi all'interno della calssificazione
 tot18 = ncell(bosco18c) 
-tot19 = ncell(bosco18c)
+tot19 = ncell(bosco19c)
 
 # calcolo la percentuale con 
 perc18 = freq(bosco18c)$count * 100 / ncell(bosco18c)
@@ -107,6 +137,8 @@ perc19 = freq(bosco19c)$count * 100 / ncell(bosco19c)
 
 boscoperso= perc18-perc19
 # = 4,03%
+
+# considerando che la tempesta è avvenuta in un'unica notte e in concomitanza ad un incendio boschivo, la percentuale di bosco perso è significativa (4%)
 
 # calcolo pixel persi da 2018 a 2018
 
@@ -135,26 +167,27 @@ p3 = ggplot(tabout, aes(x=class, y=perdite, color=class)) +
 p0 = im.ggplot(ndvi18)
 p00 = im.ggplot(ndvi19)
   
-p1 + p2 + p3
+(p1 + p2 + p3)/(p0 + p00)
 
 # differenza NDVI
-diff_ndvi = ndvi19 - ndvi18
+diff_ndvi = ndvi18 - ndvi19
 
-# imposta soglia per perdita bosco (es. -0.3)
-soglia_perdita = -0.3
+#  si sottrae  il valore di NDVI prima (2018) dal valore dopo (2019).
+#  evidenziando le variazioni nella vegetazione in giallo
 
-# crea raster binario: TRUE dove perdita NDVI significativa
-perdita_ndvi = diff_ndvi < soglia_perdita
+# plotto differenza ndvi e vedo qual'è la soglia di perdita del bosco in questo caso -0.3/-0.5
+
 
 # plot differenza NDVI
 plot(diff_ndvi, main = "Differenza NDVI 2019 - 2018", col = viridis(100))
 
-# evidenzia solo le aree di perdita significativa in rosso su mappa vuota
-plot(perdita_ndvi, col = c("transparent", "red"))
+# evidenzia solo le aree di perdita significativa in rosso su mappa trasparente 
+plot(diff_ndvi, col = c("transparent", "red"))
 
-im.multiframe(1,2)
-plot(diff_ndvi, main = "Differenza NDVI 2019 - 2018", col = viridis(100))
-plot(perdita_ndvi, col = c("transparent", "red"))
+im.multiframe(1,3)
+plot(ndvi18, main = "NDVI 2018", col = viridis(100))
+plot(ndvi19, main = "NDVI 2019", col = viridis(100))
+plot(diff_ndvi, main = "bosco perso", col = c("transparent", "red"))
 
 
 # vaia 24
@@ -170,3 +203,5 @@ im.multiframe(1,3)
 plot(ndvi18)
 plot(ndvi19)
 plot(ndvi24)
+
+
