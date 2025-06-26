@@ -8,8 +8,16 @@ setwd("Desktop/Vaia")
 
 # per esportare immagini 
 
-png("mappa_rgb_hd.png", width = 3000, height = 3000, res = 300)
+png("mappa_rgb_hd.png", width = 3000, height = 3000, res = 300) # modifico la risoluzione larghezza e altezza per avere file non troppo pesanti e che si vedano bene
 plotRGB(img, r=4, g=3, b=2, stretch="lin")  # o il tuo raster RGB
+dev.off()
+
+png("Vaia18false.png", width = 2000, height = 2000, res = 150)
+im.plotRGB(vaia18, r=4, g=2, b=3) 
+dev.off()
+
+png("Vaia19false.png", width = 2000, height = 2000, res = 150) 
+im.plotRGB(vaia19, r=4, g=2, b=3) 
 dev.off()
 
 
