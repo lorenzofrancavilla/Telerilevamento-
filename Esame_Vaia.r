@@ -6,12 +6,19 @@
 # setto la working directory sulla cartella con le immagini 
 setwd("Desktop/Vaia")
 
+# per esportare immagini 
+
+png("mappa_rgb_hd.png", width = 3000, height = 3000, res = 300)
+plotRGB(img, r=4, g=3, b=2, stretch="lin")  # o il tuo raster RGB
+dev.off()
+
+
 #carico pacchetti
-library(imageRy) # per lavorare con immagini satellitari
+library(imageRy) 
 library(terra)
-library(viridis) # per avere palette di colori adatte
-library(ggplot2) # per schematizzare e fare grafici
-library(patchwork) # per unire grafici e immagini 
+library(viridis) 
+library(ggplot2) 
+library(patchwork)
 
 
 #importo immagini e do nome (le immagini se plottate sono divise in tre bande(RGB) devo unirle)
